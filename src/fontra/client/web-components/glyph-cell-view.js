@@ -126,6 +126,7 @@ export class GlyphCellView extends HTMLElement {
   }
 
   setGlyphSections(glyphSections, resetGlyphSelection = false) {
+    console.log(glyphSections);
     this._resetSelectionHelpers();
     if (resetGlyphSelection) {
       this.glyphSelection = new Set();
@@ -229,6 +230,7 @@ export class GlyphCellView extends HTMLElement {
     const chunkOfGlyphs = item.glyphsToAdd.splice(0, CHUNK_SIZE);
     const documentFragment = document.createDocumentFragment();
     for (const [index, { glyphName, codePoints }] of enumerate(chunkOfGlyphs)) {
+      //console.log(`glyphName: "${glyphName}", codePoints: "${codePoints}"`);
       const glyphCell = new GlyphCell(
         this.fontController,
         glyphName,

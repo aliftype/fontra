@@ -729,6 +729,23 @@ export function getAssociatedCodePoints(glyphName, glyphMap) {
     .filter((codePoint) => codePoint);
 }
 
+export function glyphMapWithGlyphStringToItemList(glyphMap) {
+  return Object.entries(glyphMap).map(([glyphName, [codePoints, glyphString]]) => ({
+    glyphName,
+    codePoints,
+    glyphString,
+    associatedCodePoints: getAssociatedCodePointsWithGlyphString(glyphName, glyphMap),
+  }));
+}
+
+export function getAssociatedCodePointsWithGlyphString(glyphName, glyphMap) {
+  return getBaseGlyphName(glyphName)
+    .split("_")
+    .filter((baseGlyphName) => baseGlyphName !== glyphName)
+    .map((baseGlyphName) => glyphMap[baseGlyphName]?.[0][0])
+    .filter((codePoint) => codePoint);
+}
+
 export function getCodePointFromGlyphItem(glyphItem) {
   return glyphItem.codePoints[0] || glyphItem.associatedCodePoints[0];
 }

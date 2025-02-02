@@ -17,6 +17,7 @@ import {
   dumpURLFragment,
   friendlyHttpStatus,
   glyphMapToItemList,
+  glyphMapWithGlyphStringToItemList,
   isActiveElementTypeable,
   modulo,
   range,
@@ -427,7 +428,7 @@ export class FontOverviewController extends ViewController {
     ).filter((glyphSet) => glyphSet);
 
     for (const glyphSet of glyphSets) {
-      for (const { glyphName, codePoints } of glyphSet) {
+      for (const { glyphName, codePoints, glyphString } of glyphSet) {
         const singleCodePoint = codePoints.length === 1 ? codePoints[0] : null;
         const foundGlyphName =
           singleCodePoint !== null
@@ -436,15 +437,15 @@ export class FontOverviewController extends ViewController {
 
         if (foundGlyphName) {
           if (!combinedGlyphMap[foundGlyphName]) {
-            combinedGlyphMap[foundGlyphName] = codePoints;
+            combinedGlyphMap[foundGlyphName] = [codePoints, glyphString];
           }
         } else if (!combinedGlyphMap[glyphName]) {
-          combinedGlyphMap[glyphName] = codePoints;
+          combinedGlyphMap[glyphName] = [codePoints, glyphString];
         }
       }
     }
 
-    const combinedItemList = glyphMapToItemList(combinedGlyphMap);
+    const combinedItemList = glyphMapWithGlyphStringToItemList(combinedGlyphMap);
     // When overlaying multiple glyph sets, sort the list, or else we
     // may end up with a garbled mess of ordering
     return glyphSetKeys.length > 1
@@ -509,7 +510,9 @@ export class FontOverviewController extends ViewController {
             hasHeader: glyphSetInfo.hasHeader,
             glyphNameColumn: glyphSetInfo.glyphNameColumn,
             codePointColumn: glyphSetInfo.codePointColumn,
+            glyphStringColumn: glyphSetInfo.glyphStringColumn,
             codePointIsDecimal: glyphSetInfo.codePointIsDecimal,
+            glyphStringIsHex: glyphSetInfo.glyphStringIsHex,
           });
         } catch (e) {
           this._setErrorMessageForGlyphSet(

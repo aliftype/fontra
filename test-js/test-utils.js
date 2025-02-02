@@ -12,6 +12,7 @@ import {
   fileNameExtension,
   getCharFromCodePoint,
   glyphMapToItemList,
+  glyphMapWithGlyphStringToItemList,
   guessCharFromGlyphName,
   hexToRgba,
   hyphenatedToCamelCase,
@@ -698,6 +699,41 @@ describe("glyphMapToItemList", () => {
 
   parametrize("glyphMapToItemList test", testData, (testCase) => {
     expect(glyphMapToItemList(testCase.glyphMap)).to.deep.equal(testCase.result);
+  });
+});
+
+describe("glyphMapWithGlyphStringToItemList", () => {
+  const testData = [
+    {
+      glyphMap: {
+        "A.alt": [[], "A"],
+        "A": [[65], ""],
+        "a": [[97], ""],
+        "B": [[66, 98], ""],
+      },
+      result: [
+        {
+          glyphName: "A.alt",
+          codePoints: [],
+          glyphString: "A",
+          associatedCodePoints: [65],
+        },
+        { glyphName: "A", codePoints: [65], glyphString: "", associatedCodePoints: [] },
+        { glyphName: "a", codePoints: [97], glyphString: "", associatedCodePoints: [] },
+        {
+          glyphName: "B",
+          codePoints: [66, 98],
+          glyphString: "",
+          associatedCodePoints: [],
+        },
+      ],
+    },
+  ];
+
+  parametrize("glyphMapWithGlyphStringToItemList test", testData, (testCase) => {
+    expect(glyphMapWithGlyphStringToItemList(testCase.glyphMap)).to.deep.equal(
+      testCase.result
+    );
   });
 });
 

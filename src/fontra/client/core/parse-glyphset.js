@@ -36,7 +36,11 @@ function parseGlyphSetGlyphNames(sourceLines, dataOptions) {
 
     for (const glyphName of line.split(/\s+/)) {
       const codePoint = getCodePointFromGlyphName(glyphName);
-      glyphSet.push({ glyphName, codePoints: codePoint ? [codePoint] : [] });
+      glyphSet.push({
+        glyphName,
+        codePoints: codePoint ? [codePoint] : [],
+        glyphString: "",
+      });
     }
   }
 
@@ -49,6 +53,7 @@ function parseGlyphSetGlyphTable(sourceLines, dataOptions) {
   let tableHeader;
   let glyphNameColumnIndex = parseInt(dataOptions.glyphNameColumn);
   let codePointColumnIndex = parseInt(dataOptions.codePointColumn);
+  let glyphStringColumnIndex = parseInt(dataOptions.glyphStringColumn);
   if (!dataOptions.hasHeader) {
     // If we don't have a header, we should at least have an index for the
     // code point column OR the glyph name column
@@ -83,11 +88,21 @@ function parseGlyphSetGlyphTable(sourceLines, dataOptions) {
           throw new Error(`invalid codePointColumn: ${dataOptions.codePointColumn}`);
         }
       }
+
+      if (isNaN(glyphStringColumnIndex) && dataOptions.glyphStringColumn) {
+        glyphStringColumnIndex = tableHeader.indexOf(dataOptions.glyphStringColumn);
+        if (glyphStringColumnIndex < 0) {
+          throw new Error(
+            `invalid glyphStringColumn: ${dataOptions.glyphStringColumn}`
+          );
+        }
+      }
       continue;
     }
 
     let glyphName = row[glyphNameColumnIndex];
     let codePoint;
+    let glyphString = "";
 
     let codePointCell = row[codePointColumnIndex];
     if (codePointCell) {
@@ -102,6 +117,15 @@ function parseGlyphSetGlyphTable(sourceLines, dataOptions) {
       }
     }
 
+    let glyphStringCell = row[glyphStringColumnIndex];
+    if (glyphStringCell) {
+      if (dataOptions.glyphStringIsHex) {
+        throw new Error("glyphStringIsHex is not yet implemented");
+      } else {
+        glyphString = glyphStringCell;
+      }
+    }
+
     if (!glyphName && !codePoint) {
       continue;
     }
@@ -111,7 +135,7 @@ function parseGlyphSetGlyphTable(sourceLines, dataOptions) {
       codePoint = getCodePointFromGlyphName(glyphName);
     }
 
-    glyphSet.push({ glyphName, codePoints: codePoint ? [codePoint] : [] });
+    glyphSet.push({ glyphName, codePoints: codePoint ? [codePoint] : [], glyphString });
   }
 
   return glyphSet;

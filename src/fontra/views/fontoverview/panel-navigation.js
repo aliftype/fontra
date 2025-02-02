@@ -727,6 +727,7 @@ async function runEditGlyphSetDialog(glyphSetInfo) {
   glyphSetInfo = {
     dataFormat: "glyph-names",
     codePointIsDecimal: false,
+    glyphStringIsHex: false,
     ...glyphSetInfo,
   };
   const dialogController = new ObservableController(glyphSetInfo);
@@ -784,7 +785,8 @@ async function runEditGlyphSetDialog(glyphSetInfo) {
     width: 38em;
   }
 
-  .code-point-popup {
+  .code-point-popup,
+  .glyph-string-popup {
     width: 8em;
   }
 
@@ -798,6 +800,11 @@ async function runEditGlyphSetDialog(glyphSetInfo) {
   const codePointIsDecimal = [
     { value: false, label: "Hexadecimal" },
     { value: true, label: "Decimal" },
+  ];
+
+  const glyphStringIsHex = [
+    { value: false, label: "String" },
+    { value: true, label: "Hexadecimal" },
   ];
 
   dialog.setContent(
@@ -824,12 +831,28 @@ async function runEditGlyphSetDialog(glyphSetInfo) {
         class: "tsv-csv-only",
         labelClass: "tsv-csv-only",
       }),
+      ...labeledTextInput(
+        "Glyph string column",
+        dialogController,
+        "glyphStringColumn",
+        {
+          class: "tsv-csv-only",
+          labelClass: "tsv-csv-only",
+        }
+      ),
       ...labeledPopupSelect(
         "Code point",
         dialogController,
         "codePointIsDecimal",
         codePointIsDecimal,
         { class: "code-point-popup tsv-csv-only", labelClass: "tsv-csv-only" }
+      ),
+      ...labeledPopupSelect(
+        "Glyph string",
+        dialogController,
+        "glyphStringIsHex",
+        glyphStringIsHex,
+        { class: "glyph-string-popup tsv-csv-only", labelClass: "tsv-csv-only" }
       ),
     ])
   );

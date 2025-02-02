@@ -127,7 +127,7 @@ export class GlyphCell extends UnlitElement {
     this.height = (1 + this.marginTop + this.marginBottom) * this.size;
     assert(this.height === UNSCALED_CELL_HEIGHT, "manual size dependency incorrect");
     this.width = this.height;
-    this._glyphCharacter = this.codePoints?.[0]
+    this._glyphString = this.codePoints?.[0]
       ? getCharFromCodePoint(this.codePoints[0]) || ""
       : "";
     this._selected = false;
@@ -224,7 +224,7 @@ export class GlyphCell extends UnlitElement {
                   line-height: ${fallbackFontSize}px;
                 `,
                 },
-                [this._glyphCharacter]
+                [this._glyphString]
               ),
           html.div(
             {
